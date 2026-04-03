@@ -1,10 +1,26 @@
 
-###> symfony/framework-bundle ###
+# Symfony / PHP
+/vendor/
+/var/
 /.env.local
 /.env.local.php
-/.env.*.local
-/config/secrets/prod/prod.decrypt.private.php
-/public/bundles/
-/var/
-/vendor/
-###< symfony/framework-bundle ###
+/.env.test
+/.phpunit.result.cache
+
+# Composer
+/composer.lock
+
+# Node / Vue
+/node_modules/
+/dist/
+/npm-debug.log
+/yarn-error.log
+
+# IDEs / OS
+/.idea/
+/.vscode/
+*.swp
+*.DS_Store
+
+# Symfony secrets
+/config/secrets/prod/
