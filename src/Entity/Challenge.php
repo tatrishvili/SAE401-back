@@ -37,6 +37,10 @@ class Challenge
     #[ORM\OneToMany(targetEntity: UserChallenge::class, mappedBy: 'challenge')]
     private Collection $userChallenges;
 
+    #[ORM\ManyToOne(inversedBy: 'challenges')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Step $step = null;
+
     public function __construct()
     {
         $this->userChallenges = new ArrayCollection();
@@ -133,6 +137,18 @@ class Challenge
                 $userChallenge->setChallenge(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStep(): ?Step
+    {
+        return $this->step;
+    }
+
+    public function setStep(?Step $step): static
+    {
+        $this->step = $step;
 
         return $this;
     }
