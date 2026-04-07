@@ -51,12 +51,22 @@ class AppFixtures extends Fixture
             }
         }
 
-        // Création d'un badge de test
-        $badge = new Badge();
-        $badge->setName('Eco-Débutant');
-        $badge->setDescription('Premier pas !');
-        $badge->setImageName('badge_starter.png');
-        $manager->persist($badge);
+        // Badges de progression pour tester la gamification
+        $badges = [
+            ['Eco-Débutant', 'Premier pas !', '/images/badges/badge_starter.png', 0],
+            ['Eco-Régulier', 'Tu commences à prendre le pli.', '/images/badges/badge_regular.png', 50],
+            ['Eco-Expert', 'La transition écologique est bien lancée.', '/images/badges/badge_expert.png', 150],
+        ];
+
+        foreach ($badges as [$name, $description, $imageUrl, $xpThreshold]) {
+            $badge = new Badge();
+            $badge->setName($name);
+            $badge->setDescription($description);
+            $badge->setImageUrl($imageUrl);
+            $badge->setXpThreshold($xpThreshold);
+
+            $manager->persist($badge);
+        }
 
         // On envoie tout en base de données
         $manager->flush();

@@ -1,0 +1,22 @@
+services:
+  # La base de données MySQL
+  db:
+    image: mysql:8.0
+    container_name: sae401_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: sae_database
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+
+  # phpMyAdmin sur le port 8080
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: sae401_pma
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=db
