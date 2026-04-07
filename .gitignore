@@ -1,26 +1,22 @@
-
-# Symfony / PHP
 /vendor/
 /var/
-/.env.local
+.env
+.env.dev
+.env.prod
+.env.local
 /.env.local.php
 /.env.test
+/.env.test.local
 /.phpunit.result.cache
-
-# Composer
-/composer.lock
-
 # Node / Vue
 /node_modules/
 /dist/
 /npm-debug.log
 /yarn-error.log
-
 # IDEs / OS
 /.idea/
 /.vscode/
 *.swp
 *.DS_Store
-
 # Symfony secrets
 /config/secrets/prod/

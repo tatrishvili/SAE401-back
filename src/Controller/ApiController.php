@@ -32,8 +32,45 @@ class ApiController extends AbstractController
 
         $data = $this->impactService->getCategoryData('transport', [
             'km'         => $km,
-            'transports' => $transports, // numeric ID(s), e.g. "2" for voiture thermique
+            'transports' => $transports,
         ]);
+
+        return $this->json(['data' => $data]);
+    }
+
+    /**
+     * /api/food?category=group|rayon|popularity
+     * Returns food items grouped by category.
+     */
+    #[Route('/api/food', name: 'api_food', methods: ['GET'])]
+    public function food(Request $request): JsonResponse
+    {
+        $category = $request->query->get('category', 'group');
+
+        $data = $this->impactService->getCategoryData('food', [
+            'category' => $category,
+        ]);
+
+        return $this->json(['data' => $data]);
+    }
+
+    /**
+     * /api/fruitsetlegumes?month=4&category=1,2
+     * Returns seasonal fruits & veggies for a given month.
+     * Month defaults to current month if not provided.
+     */
+    #[Route('/api/fruitsetlegumes', name: 'api_fruitsetlegumes', methods: ['GET'])]
+    public function fruitsLegumes(Request $request): JsonResponse
+    {
+        $month    = $request->query->get('month', (int) date('n')); // current month by default
+        $category = $request->query->get('category', '');           // e.g. "1,2" for fruits+légumes
+
+        $params = ['month' => $month];
+        if ($category !== '') {
+            $params['category'] = $category;
+        }
+
+        $data = $this->impactService->getCategoryData('fruits-and-veggies', $params);
 
         return $this->json(['data' => $data]);
     }
