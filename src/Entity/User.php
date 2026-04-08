@@ -2,64 +2,61 @@
 
 namespace App\Entity;
 
-use App\Entity\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: 'user', uniqueConstraints: [
-    new ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', columns: ['email'])
-])]
-class User implements UserInterface
+#[ORM\Entity]
+#[ORM\Table(name: 'users')]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180)]
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
     private ?string $email = null;
 
-    #[ORM\Column]
-    private ?string $password = null;
-
-    #[ORM\Column]
+    #[ORM\Column(type: 'json')]
     private array $roles = [];
 
-    #[ORM\Column(options: ["default" => 0])]
-    private int $points = 0;
+    #[ORM\Column(type: 'string')]
+    private ?string $password = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $level = null;
+    #[ORM\Column(type: 'string', length: 100)]
+    private ?string $name = null;
 
-    #[ORM\Column(type: "json", nullable: true)]
-    private array $badges = [];
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    // ===== ID =====
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    // ===== EMAIL =====
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(string $email): self
     {
         $this->email = $email;
         return $this;
     }
 
-    // ===== SECURITY =====
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return $this->email;
+    }
+
+    public function getRoles(): array
+    {
+        return array_unique(array_merge(['ROLE_USER'], $this->roles));
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+        return $this;
     }
 
     public function getPassword(): string
@@ -67,74 +64,22 @@ class User implements UserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): static
+    public function setPassword(string $password): self
     {
         $this->password = $password;
         return $this;
     }
 
-    public function getRoles(): array
+    public function getName(): ?string
     {
-        $roles = $this->roles;
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
+        return $this->name;
     }
 
-    public function setRoles(array $roles): static
+    public function setName(string $name): self
     {
-        $this->roles = $roles;
+        $this->name = $name;
         return $this;
     }
 
-    public function eraseCredentials(): void
-    {
-        // nothing to do here for now
-    }
-
-    // ===== ECO SCORE =====
-    public function getPoints(): int
-    {
-        return $this->points;
-    }
-
-    public function setPoints(int $points): static
-    {
-        $this->points = $points;
-        return $this;
-    }
-
-    public function getLevel(): ?string
-    {
-        return $this->level;
-    }
-
-    public function setLevel(?string $level): static
-    {
-        $this->level = $level;
-        return $this;
-    }
-
-    public function getBadges(): array
-    {
-        return $this->badges;
-    }
-
-    public function setBadges(array $badges): static
-    {
-        $this->badges = $badges;
-        return $this;
-    }
-
-    // ===== DATE =====
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-        return $this;
-    }
+    public function eraseCredentials(): void {}
 }
