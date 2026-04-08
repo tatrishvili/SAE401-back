@@ -13,36 +13,64 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AuthController extends AbstractController
 {
-#[Route('/api/register', name: 'api_register', methods: ['POST'])]
-public function register(
-Request $request,
-UserPasswordHasherInterface $passwordHasher,
-EntityManagerInterface $em,
-ValidatorInterface $validator
-): JsonResponse {
-$data = json_decode($request->getContent(), true);
+    #[Route('/api/register', name: 'api_register', methods: ['POST'])]
+    public function register(
+        Request $request,
+        UserPasswordHasherInterface $passwordHasher,
+        EntityManagerInterface $em,
+        ValidatorInterface $validator
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
 
-$user = new User();
-$user->setEmail($data['email'] ?? '');
-$user->setName($data['name'] ?? '');
-$user->setPassword(
-$passwordHasher->hashPassword($user, $data['password'] ?? '')
-);
+        // Validate required fields
+        if (empty($data['email']) || empty($data['password']) || empty($data['name'])) {
+            return $this->json(['error' => 'Email, name and password are required'], 400);
+        }
 
-$errors = $validator->validate($user);
-if (count($errors) > 0) {
-return $this->json(['error' => (string) $errors], 400);
-}
+        $user = new User();
+        $user->setEmail($data['email']);
+        $user->setName($data['name']);
+        $user->setPassword(
+            $passwordHasher->hashPassword($user, $data['password'])
+        );
 
-$em->persist($user);
-$em->flush();
+        // Validate entity
+        $errors = $validator->validate($user);
+        if (count($errors) > 0) {
+            $errorMessages = [];
+            foreach ($errors as $error) {
+                $errorMessages[] = $error->getPropertyPath() . ': ' . $error->getMessage();
+            }
+            return $this->json(['error' => $errorMessages], 400);
+        }
 
-return $this->json(['message' => 'User registered successfully'], 201);
-}
+        // Save user
+        $em->persist($user);
+        $em->flush();
 
-#[Route('/api/login', name: 'api_login', methods: ['POST'])]
-public function login(): void
-{
-// Handled by lexik_jwt_authentication
-}
+        return $this->json(['message' => 'User registered successfully'], 201);
+    }
+
+    #[Route('/api/me', name: 'api_me', methods: ['GET'])]
+    public function me(): JsonResponse
+    {
+        $user = $this->getUser();
+
+        if (!$user) {
+            return $this->json(['error' => 'Not authenticated'], 401);
+        }
+
+        return $this->json([
+            'id'    => $user->getId(),
+            'email' => $user->getEmail(),
+            'name'  => $user->getName(),
+        ]);
+    }
+
+    #[Route('/api/login', name: 'api_login', methods: ['POST'])]
+    public function login(): void
+    {
+        // Login is handled automatically by LexikJWTAuthenticationBundle
+
+    }
 }

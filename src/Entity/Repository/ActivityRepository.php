@@ -2,22 +2,22 @@
 
 namespace App\Entity\Repository;
 
-use App\Entity\DailyEntity;
+use App\Entity\DailyEntry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<DailyEntity>
+ * @extends ServiceEntityRepository<DailyEntry>
  */
 class ActivityRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, DailyEntity::class);
+        parent::__construct($registry, DailyEntry::class); // ✅ corrected
     }
 
     //    /**
-    //     * @return DailyEntity[] Returns an array of DailyEntity objects
+    //     * @return DailyEntry[] Returns an array of DailyEntry objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class ActivityRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?DailyEntity
+    //    public function findOneBySomeField($value): ?DailyEntry
     //    {
     //        return $this->createQueryBuilder('a')
     //            ->andWhere('a.exampleField = :val')
