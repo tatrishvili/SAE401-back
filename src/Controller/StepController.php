@@ -31,17 +31,14 @@ class StepController extends AbstractController
     #[Route('/api/steps/{id}/challenges', name: 'api_step_challenges', methods: ['GET'])]
     public function getChallenges(Step $step, StepRepository $stepRepo): JsonResponse
     {
-        // MODIFICATION : Si le jour est déjà terminé, on laisse l'utilisateur voir les défis sans restriction
         if (!$step->isCompleted()) {
             
-            // Sécurité : On vérifie si le jour précédent a été fait il y a plus de 24h
             if ($step->getPosition() > 1) {
                 $previousStep = $stepRepo->findOneBy(['position' => $step->getPosition() - 1]);
                 
                 if ($previousStep && $previousStep->getValidatedAt()) {
                     $diff = time() - $previousStep->getValidatedAt()->getTimestamp();
                     
-                    // 86400 secondes = 24 heures
                     if ($diff < 10) {
                         return $this->json(['error' => 'Attends demain !'], 403);
                     }
@@ -49,7 +46,6 @@ class StepController extends AbstractController
             }
         }
 
-        // Récupération et formatage des défis
         $challenges = $step->getChallenges();
         $data = [];
         foreach ($challenges as $challenge) {
@@ -89,11 +85,9 @@ class StepController extends AbstractController
             }
         }
 
-        // Marquage du jour actuel comme terminé
         $currentStep->setIsCompleted(true);
         $currentStep->setValidatedAt($now);
 
-        // Déblocage du jour suivant
         $nextStep = $stepRepo->findOneBy(['position' => $currentStep->getPosition() + 1]);
         if ($nextStep) {
             $nextStep->setIsUnlocked(true);
