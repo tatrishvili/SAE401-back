@@ -50,6 +50,8 @@ security:
         - { path: ^/api/transport, roles: PUBLIC_ACCESS }
         - { path: ^/api/food, roles: PUBLIC_ACCESS }
         - { path: ^/api/fruitsetlegumes, roles: PUBLIC_ACCESS }
+        - { path: ^/api/tips, roles: PUBLIC_ACCESS }
+        - { path: ^/api/challenges, roles: PUBLIC_ACCESS }
 
         # Everything else under /api requires authentication
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
