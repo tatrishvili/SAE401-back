@@ -1030,9 +1030,12 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             filter?: scalar|Param|null, // Default: "({uid_key}={user_identifier})"
  *             password_attribute?: scalar|Param|null, // Default: null
  *         },
+<<<<<<< HEAD
  *         lexik_jwt?: array{
  *             class?: scalar|Param|null, // Default: "Lexik\\Bundle\\JWTAuthenticationBundle\\Security\\User\\JWTUser"
  *         },
+=======
+>>>>>>> origin/feature-api-steps
  *     }>,
  *     firewalls?: array<string, array{ // Default: []
  *         pattern?: scalar|Param|null,
@@ -1091,10 +1094,13 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             provider?: scalar|Param|null,
  *             user?: scalar|Param|null, // Default: "REMOTE_USER"
  *         },
+<<<<<<< HEAD
  *         jwt?: array{
  *             provider?: scalar|Param|null, // Default: null
  *             authenticator?: scalar|Param|null, // Default: "lexik_jwt_authentication.security.jwt_authenticator"
  *         },
+=======
+>>>>>>> origin/feature-api-steps
  *         login_link?: array{
  *             check_route?: scalar|Param|null, // Route that will validate the login link - e.g. "app_login_link_verify".
  *             check_post_only?: scalar|Param|null, // If true, only HTTP POST requests to "check_route" will be handled by the authenticator. // Default: false
@@ -1294,6 +1300,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     }>,
  *     role_hierarchy?: array<string, string|list<scalar|Param|null>>,
  * }
+<<<<<<< HEAD
  * @psalm-type TwigConfig = array{
  *     form_themes?: list<scalar|Param|null>,
  *     globals?: array<string, array{ // Default: []
@@ -1774,6 +1781,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     dump_destination?: scalar|Param|null, // A stream URL where dumps should be written to. // Default: null
  *     theme?: "dark"|"light"|Param, // Changes the color of the dump() output when rendered directly on the templating. "dark" (default) or "light". // Default: "dark"
  * }
+=======
+>>>>>>> origin/feature-api-steps
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -1783,11 +1792,14 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     doctrine_migrations?: DoctrineMigrationsConfig,
  *     nelmio_cors?: NelmioCorsConfig,
  *     security?: SecurityConfig,
+<<<<<<< HEAD
  *     twig?: TwigConfig,
  *     api_platform?: ApiPlatformConfig,
  *     twig_extra?: TwigExtraConfig,
  *     twig_component?: TwigComponentConfig,
  *     lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
+=======
+>>>>>>> origin/feature-api-steps
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -1798,12 +1810,15 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         maker?: MakerConfig,
  *         nelmio_cors?: NelmioCorsConfig,
  *         security?: SecurityConfig,
+<<<<<<< HEAD
  *         twig?: TwigConfig,
  *         api_platform?: ApiPlatformConfig,
  *         twig_extra?: TwigExtraConfig,
  *         twig_component?: TwigComponentConfig,
  *         lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
  *         debug?: DebugConfig,
+=======
+>>>>>>> origin/feature-api-steps
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -1814,11 +1829,14 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         doctrine_migrations?: DoctrineMigrationsConfig,
  *         nelmio_cors?: NelmioCorsConfig,
  *         security?: SecurityConfig,
+<<<<<<< HEAD
  *         twig?: TwigConfig,
  *         api_platform?: ApiPlatformConfig,
  *         twig_extra?: TwigExtraConfig,
  *         twig_component?: TwigComponentConfig,
  *         lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
+=======
+>>>>>>> origin/feature-api-steps
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -1829,11 +1847,14 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         doctrine_migrations?: DoctrineMigrationsConfig,
  *         nelmio_cors?: NelmioCorsConfig,
  *         security?: SecurityConfig,
+<<<<<<< HEAD
  *         twig?: TwigConfig,
  *         api_platform?: ApiPlatformConfig,
  *         twig_extra?: TwigExtraConfig,
  *         twig_component?: TwigComponentConfig,
  *         lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
+=======
+>>>>>>> origin/feature-api-steps
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,

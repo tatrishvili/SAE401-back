@@ -1,26 +1,16 @@
-/vendor/
-/var/
-.env
-.env.dev
-.env.prod
-.env.local
-/.env.local.php
-/.env.test
-/.env.test.local
-/.phpunit.result.cache
-# Node / Vue
-/node_modules/
-/dist/
-/npm-debug.log
-/yarn-error.log
-# IDEs / OS
-/.idea/
-/.vscode/
-*.swp
-*.DS_Store
-# Symfony secrets
-/config/secrets/prod/
 
-###> lexik/jwt-authentication-bundle ###
-/config/jwt/*.pem
-###< lexik/jwt-authentication-bundle ###
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/.env
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+###> symfony/asset-mapper ###
+/public/assets/
+/assets/vendor/
+###< symfony/asset-mapper ###
