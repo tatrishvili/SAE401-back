@@ -85,7 +85,7 @@ class DailyEntryController extends AbstractController
         return $this->json($entry, 201, [], ['groups' => 'entry:read']);
     }
 
-    #[Route('/{id}', name: 'api_entries_update', methods: ['PUT'])]
+    #[Route('/{id}', name: 'api_entries_update', methods: ['PUT'], requirements: ['id' => '\d+'])]
     public function update(
         DailyEntry $entry,
         Request $request,
@@ -116,7 +116,7 @@ class DailyEntryController extends AbstractController
         return $this->json($entry, 200, [], ['groups' => 'entry:read']);
     }
 
-    #[Route('/{id}', name: 'api_entries_delete', methods: ['DELETE'])]
+    #[Route('/{id}', name: 'api_entries_delete', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     public function delete(
         DailyEntry $entry,
         EntityManagerInterface $em
