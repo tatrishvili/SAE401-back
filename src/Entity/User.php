@@ -1,17 +1,17 @@
 <?php
-
 namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-class User implements UserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -21,24 +21,21 @@ class User implements UserInterface
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
-    /**
-     * @var list<string> The user roles
-     */
     #[ORM\Column]
     private array $roles = [];
+
+    #[ORM\Column]
+    private ?string $password = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $name = null;
 
     #[ORM\Column(options: ['default' => 0])]
     private int $xp = 0;
 
-    /**
-     * @var Collection<int, UserChallenge>
-     */
     #[ORM\OneToMany(targetEntity: UserChallenge::class, mappedBy: 'owner')]
     private Collection $userChallenges;
 
-    /**
-     * @var Collection<int, Badge>
-     */
     #[ORM\ManyToMany(targetEntity: Badge::class, inversedBy: 'users')]
     #[ORM\JoinTable(name: 'user_badge')]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
@@ -51,78 +48,33 @@ class User implements UserInterface
         $this->badges = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    public function getId(): ?int { return $this->id; }
 
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
+    public function getEmail(): ?string { return $this->email; }
+    public function setEmail(string $email): static { $this->email = $email; return $this; }
 
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
+    public function getUserIdentifier(): string { return (string) $this->email; }
 
-        return $this;
-    }
-
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
-    public function getUserIdentifier(): string
-    {
-        return (string) $this->email;
-    }
-
-    /**
-     * @see UserInterface
-     */
     public function getRoles(): array
     {
         $roles = $this->roles;
         $roles[] = 'ROLE_USER';
-
         return array_unique($roles);
     }
+    public function setRoles(array $roles): static { $this->roles = $roles; return $this; }
 
-    /**
-     * @param list<string> $roles
-     */
-    public function setRoles(array $roles): static
-    {
-        $this->roles = $roles;
+    public function getPassword(): string { return $this->password; }
+    public function setPassword(string $password): static { $this->password = $password; return $this; }
 
-        return $this;
-    }
+    public function getName(): ?string { return $this->name; }
+    public function setName(string $name): static { $this->name = $name; return $this; }
 
-    public function eraseCredentials(): void
-    {
-        // Aucun secret temporaire a effacer actuellement.
-    }
+    public function eraseCredentials(): void {}
 
-    public function getXp(): int
-    {
-        return $this->xp;
-    }
+    public function getXp(): int { return $this->xp; }
+    public function setXp(int $xp): static { $this->xp = $xp; return $this; }
 
-    public function setXp(int $xp): static
-    {
-        $this->xp = $xp;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, UserChallenge>
-     */
-    public function getUserChallenges(): Collection
-    {
-        return $this->userChallenges;
-    }
+    public function getUserChallenges(): Collection { return $this->userChallenges; }
 
     public function addUserChallenge(UserChallenge $userChallenge): static
     {
@@ -130,29 +82,20 @@ class User implements UserInterface
             $this->userChallenges->add($userChallenge);
             $userChallenge->setOwner($this);
         }
-
         return $this;
     }
 
     public function removeUserChallenge(UserChallenge $userChallenge): static
     {
         if ($this->userChallenges->removeElement($userChallenge)) {
-            // set the owning side to null (unless already changed)
             if ($userChallenge->getOwner() === $this) {
                 $userChallenge->setOwner(null);
             }
         }
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Badge>
-     */
-    public function getBadges(): Collection
-    {
-        return $this->badges;
-    }
+    public function getBadges(): Collection { return $this->badges; }
 
     public function addBadge(Badge $badge): static
     {
@@ -160,7 +103,6 @@ class User implements UserInterface
             $this->badges->add($badge);
             $badge->addUser($this);
         }
-
         return $this;
     }
 
@@ -169,7 +111,6 @@ class User implements UserInterface
         if ($this->badges->removeElement($badge)) {
             $badge->removeUser($this);
         }
-
         return $this;
     }
 }
