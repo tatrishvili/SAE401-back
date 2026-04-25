@@ -1,10 +1,13 @@
-
+# ---------------------------------------------------------------------------
+# Symfony
+# ---------------------------------------------------------------------------
 ###> symfony/framework-bundle ###
+# .env reste versionné (valeurs par défaut). Seuls les overrides locaux sont ignorés.
 /.env.local
 /.env.local.php
 /.env.*.local
-/.env
 /config/secrets/prod/prod.decrypt.private.php
+/config/secrets/dev/dev.decrypt.private.php
 /public/bundles/
 /var/
 /vendor/
@@ -17,5 +20,26 @@
 
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
+/config/jwt/*.pem.bak
+/config/jwt/*.pem.encrypted.bak
 ###< lexik/jwt-authentication-bundle ###
-config/secrets/dev/dev.decrypt.private.php
+
+# ---------------------------------------------------------------------------
+# Base de données SQLite (locale)
+# ---------------------------------------------------------------------------
+*.db
+*.sqlite
+*.sqlite3
+
+# ---------------------------------------------------------------------------
+# IDE & OS
+# ---------------------------------------------------------------------------
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs PHP
+*.log
