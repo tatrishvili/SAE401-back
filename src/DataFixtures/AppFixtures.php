@@ -1,34 +1,74 @@
 <?php
-// src/DataFixtures/AppFixtures.php
+
 namespace App\DataFixtures;
 
-use App\Entity\User;
+use App\Entity\Step;
+use App\Entity\Challenge;
+use App\Entity\Badge;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
-    private UserPasswordHasherInterface $passwordHasher;
-
-    public function __construct(UserPasswordHasherInterface $passwordHasher)
-    {
-        $this->passwordHasher = $passwordHasher;
-    }
-
-    // This method must accept ObjectManager $manager
     public function load(ObjectManager $manager): void
     {
-        $user = new User();
-        $user->setEmail('admin@example.com');
-        $user->setName('Admin');
-        $user->setRoles(['ROLE_USER']);
+        // Données de base pour tes défis
+        $challengeTemplates = [
+            ['Transport', 'Prendre le vélo aujourd\'hui', 'transport', 2.5],
+            ['Alimentation', 'Faire un repas 100% végétarien', 'meal', 1.8],
+            ['Énergie', 'Éteindre toutes les veilles ce soir', 'energy', 0.5],
+            ['Déchets', 'Utiliser un sac réutilisable', 'waste', 0.3],
+        ];
 
-        // hash password
-        $hashed = $this->passwordHasher->hashPassword($user, 'password');
-        $user->setPassword($hashed);
+        for ($i = 1; $i <= 30; $i++) {
+            $step = new Step();
+            $step->setPosition($i);
+            $step->setTitle("Jour " . $i);
+            
+            // Le jour 1 est débloqué par défaut, les autres sont verrouillés
+            $step->setIsUnlocked($i === 1);
+            
+            // NOUVEAU : On définit que le jour n'est pas encore terminé
+            $step->setIsCompleted(false); 
 
-        $manager->persist($user);
+            $manager->persist($step);
+
+            // On crée 2 défis pour CHAQUE jour en piochant dans nos templates
+            for ($j = 0; $j < 2; $j++) {
+                $template = $challengeTemplates[array_rand($challengeTemplates)];
+                
+                $challenge = new Challenge();
+                $challenge->setTitle($template[0] . " - Jour " . $i);
+                $challenge->setDescription($template[1]);
+                $challenge->setCategory($template[2]);
+                $challenge->setCo2Reward($template[3]);
+                $challenge->setIsDaily(true);
+                
+                // On lie le défi à la Step (le jour) actuelle
+                $challenge->setStep($step);
+                
+                $manager->persist($challenge);
+            }
+        }
+
+        // Badges de progression pour tester la gamification
+        $badges = [
+            ['Eco-Débutant', 'Premier pas !', '/images/badges/badge_starter.png', 0],
+            ['Eco-Régulier', 'Tu commences à prendre le pli.', '/images/badges/badge_regular.png', 50],
+            ['Eco-Expert', 'La transition écologique est bien lancée.', '/images/badges/badge_expert.png', 150],
+        ];
+
+        foreach ($badges as [$name, $description, $imageUrl, $xpThreshold]) {
+            $badge = new Badge();
+            $badge->setName($name);
+            $badge->setDescription($description);
+            $badge->setImageUrl($imageUrl);
+            $badge->setXpThreshold($xpThreshold);
+
+            $manager->persist($badge);
+        }
+
+        // On envoie tout en base de données
         $manager->flush();
     }
 }

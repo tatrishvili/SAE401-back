@@ -1,26 +1,45 @@
-/vendor/
-/var/
-.env
-.env.dev
-.env.prod
-.env.local
+# ---------------------------------------------------------------------------
+# Symfony
+# ---------------------------------------------------------------------------
+###> symfony/framework-bundle ###
+# .env reste versionné (valeurs par défaut). Seuls les overrides locaux sont ignorés.
+/.env.local
 /.env.local.php
-/.env.test
-/.env.test.local
-/.phpunit.result.cache
-# Node / Vue
-/node_modules/
-/dist/
-/npm-debug.log
-/yarn-error.log
-# IDEs / OS
-/.idea/
-/.vscode/
-*.swp
-*.DS_Store
-# Symfony secrets
-/config/secrets/prod/
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/config/secrets/dev/dev.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+###> symfony/asset-mapper ###
+/public/assets/
+/assets/vendor/
+###< symfony/asset-mapper ###
 
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
+/config/jwt/*.pem.bak
+/config/jwt/*.pem.encrypted.bak
 ###< lexik/jwt-authentication-bundle ###
+
+# ---------------------------------------------------------------------------
+# Base de données SQLite (locale)
+# ---------------------------------------------------------------------------
+*.db
+*.sqlite
+*.sqlite3
+
+# ---------------------------------------------------------------------------
+# IDE & OS
+# ---------------------------------------------------------------------------
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs PHP
+*.log
