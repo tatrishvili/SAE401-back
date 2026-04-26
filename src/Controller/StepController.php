@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Step;
+use App\Entity\User;
 use App\Repository\StepRepository;
+use App\Service\GamificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,13 +34,10 @@ class StepController extends AbstractController
     public function getChallenges(Step $step, StepRepository $stepRepo): JsonResponse
     {
         if (!$step->isCompleted()) {
-            
             if ($step->getPosition() > 1) {
                 $previousStep = $stepRepo->findOneBy(['position' => $step->getPosition() - 1]);
-                
                 if ($previousStep && $previousStep->getValidatedAt()) {
                     $diff = time() - $previousStep->getValidatedAt()->getTimestamp();
-                    
                     if ($diff < 10) {
                         return $this->json(['error' => 'Attends demain !'], 403);
                     }
@@ -61,11 +60,14 @@ class StepController extends AbstractController
     }
 
     #[Route('/api/steps/{id}/unlock-next', name: 'api_step_unlock_next', methods: ['POST'])]
-    public function unlockNext(Step $currentStep, StepRepository $stepRepo, EntityManagerInterface $em): JsonResponse
-    {
+    public function unlockNext(
+        Step $currentStep,
+        StepRepository $stepRepo,
+        EntityManagerInterface $em,
+        GamificationService $gamificationService
+    ): JsonResponse {
         $now = new \DateTimeImmutable();
 
-        // On vérifie le temps écoulé depuis la dernière validation globale pour empêcher de tricher
         $lastCompletedStep = $stepRepo->findOneBy(
             ['isCompleted' => true],
             ['position' => 'DESC']
@@ -73,12 +75,10 @@ class StepController extends AbstractController
 
         if ($lastCompletedStep && $lastCompletedStep->getValidatedAt()) {
             $diff = $now->getTimestamp() - $lastCompletedStep->getValidatedAt()->getTimestamp();
-            
             if ($diff < 10) {
                 $remaining = 10 - $diff;
                 $hours = floor($remaining / 3600);
                 $minutes = floor(($remaining % 3600) / 60);
-                
                 return $this->json([
                     'error' => "Patience ! Reviens dans environ $hours h $minutes min pour ton prochain défi."
                 ], 403);
@@ -87,6 +87,12 @@ class StepController extends AbstractController
 
         $currentStep->setIsCompleted(true);
         $currentStep->setValidatedAt($now);
+
+        // Add XP to the user when completing a step
+        $user = $this->getUser();
+        if ($user instanceof User) {
+            $gamificationService->addXp($user, 25);
+        }
 
         $nextStep = $stepRepo->findOneBy(['position' => $currentStep->getPosition() + 1]);
         if ($nextStep) {
